@@ -1,7 +1,10 @@
 import { CronJob } from 'cron';
 
-const job = new CronJob('* * * * * *', () => {
+import { getInvestigationsToDeleteId } from './DBAccess';
+
+const job = new CronJob('* * * * * *', async () => {
     console.log('hello from cron job');
+    console.log(await getInvestigationsToDeleteId())
 });
 
 job.start();
