@@ -15,15 +15,12 @@ const pool = new Pool({
 });
 
 pool.on('connect', () => {
-    console.log('got connection to the DB');
+    console.log('initiated db connection pool');
 });
-
-pool.on('error', (err) => {
-    console.log('got error from DB: ' + err);
-})
 
 export const deleteOldInvestigations = async (): Promise<void> => {
     try {
+        console.log('executing DB query');
         await pool.query(deleteInvestigationsQuery(subDays(new Date(), +process.env.MIN_DAYS_TO_REMOVE), countiesBlackList));
     } catch (error) {
         throw new DeletingInvestigationsError(error);
