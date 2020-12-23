@@ -1,10 +1,11 @@
 import { CronJob } from 'cron';
 
-import { getInvestigationsToDeleteId } from './DBAccess';
+import { getInvestigationsToDeleteId, deleteOldInvestigations } from './DBAccess';
 
 const job = new CronJob('* * * * * *', async () => {
     console.log('hello from cron job');
-    console.log(await getInvestigationsToDeleteId())
+    const epidemioogyNumbersToDelete = await getInvestigationsToDeleteId();
+    deleteOldInvestigations(epidemioogyNumbersToDelete);
 });
 
 job.start();
