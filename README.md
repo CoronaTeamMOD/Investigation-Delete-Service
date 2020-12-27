@@ -34,5 +34,8 @@ initiate the environment variables that are mentioned in the .env-sample with th
 * CONNECTIONS_COUNT = the connection count you want to the DB
 * MIN_DAYS_TO_REMOVE = the minimum days count in order to delete an investigation
 * CRON_JOB_TIMING = timing string to the cron job using [this guide](https://support.acquia.com/hc/en-us/articles/360004224494-Cron-time-string-format)
+* ENVIRONMENT = your environment local/dev/test/prod
+* SHOULD_POST_TO_AZURE = true/false if you want to post the logs to azure application insights
+* INSTRUMENTATION_KEY = ask one of the developers for the key 😁
 <br />
 Good Luck! 😀
