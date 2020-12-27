@@ -20,12 +20,20 @@ begin
 	DELETE FROM public.exposure 
 		where investigation_id = delete_epi_number;
 
-	DELETE FROM public.contacted_person  
-		where contact_event	in (select id from public.contact_event where investigation_id = delete_epi_number);
-
 	DELETE FROM public.contact_event
 		where investigation_id = delete_epi_number;
+
+	-- deleting persons that are related to contact_event
+	DELETE FROM public.person
+		where id in (select person_info from public.contacted_person where contact_event in (select id from public.contact_event where investigation_id = delete_epi_number));
+
+	DELETE FROM public.contacted_person  
+		where contact_event	in (select id from public.contact_event where investigation_id = delete_epi_number);
 		
+	-- deleting persons from involved contacts
+	DELETE FROM public.person
+		WHERE id in (select person_id from public.involved_contact where investigation_id = delete_epi_number);
+
 	DELETE FROM public.involved_contact
 		WHERE investigation_id = delete_epi_number;
 	
@@ -35,17 +43,16 @@ begin
 	DELETE FROM public.investigated_patient_background_diseases
 		WHERE investigated_patient_id in (select id from public.investigated_patient where covid_patient = delete_epi_number);
 		
+    DELETE FROM public.investigation
+		WHERE epidemiology_number = delete_epi_number;
+
 	DELETE FROM public.investigated_patient
 		where covid_patient = delete_epi_number;
 
 	DELETE FROM public.covid_patients
 		WHERE epidemiology_number = delete_epi_number;
-	
-	DELETE FROM public.investigated_patient_symptoms
-		WHERE investigation_id = delete_epi_number;
-	
-    DELETE FROM public.investigation
-		WHERE epidemiology_number = delete_epi_number;
 		
 end;
 $BODY$;
+
+-- check if deletes group

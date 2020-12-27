@@ -20,8 +20,9 @@ pool.on('connect', () => {
 
 export const deleteOldInvestigations = async (): Promise<void> => {
     try {
-        console.log('executing DB query');
+        console.log('executing DB query to delete investigations');
         await pool.query(deleteInvestigationsQuery(subDays(new Date(), +process.env.MIN_DAYS_TO_REMOVE), countiesBlackList));
+        console.log('finished deleting investigations successfully');
     } catch (error) {
         throw new DeletingInvestigationsError(error);
     }
