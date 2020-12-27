@@ -1,0 +1,92 @@
+trigger: 
+  branches:
+    include:
+    - dev
+    - test
+    - master
+
+pr: none
+
+variables:
+  arcName: 'coronai'
+  MOHarcName: 'IDFDocker'
+  AzureContainerRegistry: 'AzureContainerRegistry'
+  MOHContainerRegistry: 'MOHContainerRegistry'
+  isMaster: $[eq(variables['Build.SourceBranch'], 'refs/heads/master')]
+  isTest: $[eq(variables['Build.SourceBranch'], 'refs/heads/test')]
+  isDev: $[eq(variables['Build.SourceBranch'], 'refs/heads/dev')]
+  isForTesting: $[eq(variables['Build.SourceBranch'], 'refs/heads/feat/deployment')]
+
+stages:
+- stage:
+  displayName: TestsAndBuildStage
+  jobs:
+  - job: BuildJob
+    displayName: BuildJob
+    steps:
+      
+    - task: NodeTool@0
+      inputs:
+        versionSpec: '10.18'
+      displayName: 'Installing Node.js'
+
+    - bash: 
+      npm install --dev
+      displayName: 'Installing the dev dependencies'
+
+    - bash: 
+      npm run build
+      displayName: 'Compiling the service'
+      continueOnError: 'false'
+
+    - task: Docker@2
+      condition: eq(variables.isDev,true)
+      continueOnError: 'false'
+      displayName: Build and push dev service image to CoronaI Team container registry
+      inputs:
+        command: buildAndPush
+        dockerfile: '**/Dockerfile'
+        repository: '$(arcName)'
+        azureSubscriptionEndpoint: '$(AzureContainerRegistry)'
+        containerRegistry: '$(AzureContainerRegistry)'
+        tags: |
+          investigation-delete-service-dev
+    
+    - task: Docker@2
+      condition: eq(variables.isDev,true)
+      continueOnError: 'false'
+      displayName: Build and push dev service image to CoronaI Team container registry
+      inputs:
+        command: buildAndPush
+        dockerfile: '**/Dockerfile'
+        repository: '$(arcName)'
+        azureSubscriptionEndpoint: '$(AzureContainerRegistry)'
+        containerRegistry: '$(AzureContainerRegistry)'
+        tags: |
+          investigation-delete-to-delete
+
+    - task: Docker@2
+      condition: eq(variables.isTest,true)
+      continueOnError: 'false'
+      displayName: Build and push test service image to MOH container registry
+      inputs:
+        command: buildAndPush
+        dockerfile: '**/Dockerfile'
+        repository: '$(MOHarcName)'
+        azureSubscriptionEndpoint: '$(MOHContainerRegistry)'
+        containerRegistry: '$(MOHContainerRegistry)'
+        tags: |
+          investigation-delete-service-test
+
+    - task: Docker@2
+      condition: eq(variables.isMaster,true)
+      continueOnError: 'false'
+      displayName: Build and push master service image to MOH container registry
+      inputs:
+        command: buildAndPush
+        dockerfile: '**/Dockerfile'
+        repository: '$(MOHarcName)'
+        azureSubscriptionEndpoint: '$(MOHContainerRegistry)'
+        containerRegistry: '$(MOHContainerRegistry)'
+        tags: |
+          investigation-delete-service-master
