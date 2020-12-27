@@ -32,8 +32,8 @@ stages:
       displayName: 'Installing Node.js'
 
     - bash: |
-        npm install --only=dev
-      displayName: 'Installing the dev dependencies'
+        npm install
+      displayName: 'Installing the dependencies'
       continueOnError: 'false'
 
     - bash: |
