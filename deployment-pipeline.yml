@@ -18,10 +18,10 @@ variables:
 
 stages:
 - stage:
-  displayName: TestsAndBuildStage
+  displayName: Build Stage
   jobs:
   - job: BuildJob
-    displayName: BuildJob
+    displayName: Build Job
     steps:
       
     - task: NodeTool@0
