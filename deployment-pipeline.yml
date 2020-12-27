@@ -30,12 +30,13 @@ stages:
         versionSpec: '10.18'
       displayName: 'Installing Node.js'
 
-    - bash: 
-      npm install --dev
+    - bash: |
+        npm install --dev
       displayName: 'Installing the dev dependencies'
+      continueOnError: 'false'
 
-    - bash: 
-      npm run build
+    - bash: |
+        npm run build
       displayName: 'Compiling the service'
       continueOnError: 'false'
 
