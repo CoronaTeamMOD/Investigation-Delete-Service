@@ -11,7 +11,8 @@ CREATE OR REPLACE FUNCTION public.delete_investigation(
     VOLATILE 
 AS $BODY$
 declare
-
+	investigations_in_group int4;
+	group_id_to_inspect uuid;
 begin
 
 	DELETE FROM public.investigated_patient_symptoms 
@@ -43,6 +44,11 @@ begin
 	DELETE FROM public.investigated_patient_background_diseases
 		WHERE investigated_patient_id in (select id from public.investigated_patient where covid_patient = delete_epi_number);
 		
+	SELECT INTO group_id_to_inspect
+	group_id
+	FROM investigation
+	WHERE epidemiology_number = delete_epi_number;
+
     DELETE FROM public.investigation
 		WHERE epidemiology_number = delete_epi_number;
 
@@ -52,7 +58,22 @@ begin
 	DELETE FROM public.covid_patients
 		WHERE epidemiology_number = delete_epi_number;
 		
+	SELECT INTO investigations_in_group
+	COUNT(*)
+	FROM investigation
+	WHERE group_id = group_id_to_inspect;
+
+	-- if in the future the minimum for group will be increased
+	IF investigations_in_group < 2 THEN
+		-- in order to avoid unnecessary scan 
+		IF investigations_in_group > 0 THEN
+			UPDATE investigation
+			SET group_id = null
+			WHERE group_id = group_id_to_inspect;
+		END IF;
+		DELETE FROM public.investigation_group 
+		WHERE id = group_id_to_inspect;
+	END IF;
+
 end;
 $BODY$;
-
--- check if deletes group
