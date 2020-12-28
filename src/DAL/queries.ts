@@ -4,7 +4,7 @@ export const deleteInvestigationsQuery = (maxLastUpdateTime: Date, countiesBlack
       SELECT delete_investigation(epidemiology_number)
       FROM investigation inv 
       JOIN investigation_status stat ON inv.investigation_status = stat.id
-      JOIN "user" ON inv.last_updator = "user".id
+      JOIN "user" ON inv.creator = "user".id
       JOIN counties cts ON "user".investigation_group = cts.id
       WHERE last_update_time <= '${format(maxLastUpdateTime, 'yyyy-MM-dd HH:mm:ss')}'
             AND stat.display_name = 'הושלמה'
