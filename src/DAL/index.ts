@@ -36,10 +36,6 @@ export const deleteOldInvestigations = async (): Promise<void> => {
             severity: Severity.LOW
         });
     } catch (error) {
-        logger.error({
-            step: 'got error in querying the DB, throwing an exception',
-            severity: Severity.HIGH
-        });
         throw new DeletingInvestigationsError(error);
     }
 }
