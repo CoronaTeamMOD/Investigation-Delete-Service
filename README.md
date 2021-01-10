@@ -37,5 +37,6 @@ initiate the environment variables that are mentioned in the .env-sample with th
 * ENVIRONMENT = your environment local/dev/test/prod
 * SHOULD_POST_TO_AZURE = true/false if you want to post the logs to azure application insights
 * INSTRUMENTATION_KEY = ask one of the developers for the key 😁
+* PORT = the port that the dummy server should run on
 <br />
 Good Luck! 😀
