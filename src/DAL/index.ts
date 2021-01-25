@@ -10,7 +10,10 @@ import { DeletingInvestigationsError } from '../Errors';
 
 config();
 
-const countiesBlackList: string[] = ['הכשרות', 'צוות הפרוייקט'];
+const PROJECT_TEAM_COUNTY = 9998;
+const TRAINING_TEAM_COUNTY = 9996;
+
+const countiesBlackList: number[] = [PROJECT_TEAM_COUNTY, TRAINING_TEAM_COUNTY];
 
 const pool = new Pool({
     connectionString: process.env.CONNECTION_STRING,
